@@ -3,6 +3,7 @@ import loginicons from "../assest/signin.gif"
 import { FaEye } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import imageUpload from '../helpers/imageUpload'
+import SummaryApi from '../common'
 
 function SignUp() {
 
@@ -42,6 +43,26 @@ const profileUpload = async (e) => {
   })
 }
 
+const handleSubmit = async(e) =>{
+  e.preventDefault()
+
+  if (data.password === data.confirmPassword) {
+    console.log("SummaryApi.signUp.url",SummaryApi.signUp.url)
+    
+    const dataResponse = await fetch(SummaryApi.signUp.url,{
+      method:SummaryApi.signUp.method,
+      headers:{
+        "content-type":"application/json"
+      },
+      body : JSON.stringify(data)
+    })
+    const dataApi = await dataResponse.json()
+    console.log("data",dataApi)
+  } else {
+    console.log("please confim passsword")
+  }
+}
+
   return (
     <section id='login'>
       <div className='mx-auto container p-4 mt-[80px]'>
@@ -60,7 +81,7 @@ const profileUpload = async (e) => {
                   </form>
                 </div>
 
-                <form className='pt-6 flex flex-col gap-4'>
+                <form className='pt-6 flex flex-col gap-4' onSubmit={handleSubmit}>
                 <div className='grid'>
                         <label>Name:</label>
                         <div className='bg-slate-100 p-2'>
