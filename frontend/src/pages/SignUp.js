@@ -1,14 +1,23 @@
 import React, { useState } from 'react'
 import loginicons from "../assest/signin.gif"
-import { FaEye } from 'react-icons/fa6'
-import { Link } from 'react-router-dom'
+// import { FaEye } from 'react-icons/fa6'
+import { Link, useNavigate } from 'react-router-dom'
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 import imageUpload from '../helpers/imageUpload'
 import SummaryApi from '../common'
+import { toast } from 'react-toastify';
+
+
 
 function SignUp() {
+  const [showPassword,setShowPassword] = useState(false)
+  const [showConfirmPassword,setShowConfirmPassword] = useState(false)
+
+  const navigate = useNavigate()
 
 //CREATING A STATE FOR THE FORM INPUT
- const [data,setData] = useState({
+  const [data,setData] = useState({
     name:"",
     email :"",
     password:"",
@@ -17,7 +26,7 @@ function SignUp() {
  })
  
  //CREATING A FUNCTION FOR THE FORM INPUT
- const handleChange = (e) =>{
+ const handleOnChange = (e) =>{
     const {name , value} = e.target
 
     setData((prevState)=>{
@@ -57,9 +66,19 @@ const handleSubmit = async(e) =>{
       body : JSON.stringify(data)
     })
     const dataApi = await dataResponse.json()
-    console.log("data",dataApi)
+    if (dataApi.success) {
+      toast.success(dataApi.message)
+      navigate("/login")
+    }
+
+    if (dataApi.error) {
+      toast.error(dataApi.message)
+    }
+    // toast(dataApi.message)
+
+    // console.log("data",dataApi)
   } else {
-    console.log("please confim passsword")
+    toast.error("please confim passsword")
   }
 }
 
@@ -81,75 +100,92 @@ const handleSubmit = async(e) =>{
                   </form>
                 </div>
 
-                <form className='pt-6 flex flex-col gap-4' onSubmit={handleSubmit}>
-                <div className='grid'>
-                        <label>Name:</label>
-                        <div className='bg-slate-100 p-2'>
-                            <input 
-                               required
-                                type='text'
-                                name='name'
-                                value={data.name} 
-                                onChange={handleChange}
-                                placeholder='enter your name'
-                                className='w-full h-full outline-none bg-transparent'
-                            />
-                        </div>
-                    </div>
-
-                    <div className='grid'>
-                        <label>Email :</label>
-                        <div className='bg-slate-100 p-2'>
-                            <input 
-                                required
-                                type='email'
-                                name='email'
-                                value={data.email} 
-                                onChange={handleChange}
-                                placeholder='enter email'
-                                className='w-full h-full outline-none bg-transparent'
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label>Password :</label>
-                        <div  className='bg-slate-100 p-2 flex items-center'>
-                            <input 
-                               required
-                                type='password' 
-                                name='password'
-                                value={data.password} 
-                                onChange={handleChange}
-                                placeholder='enter password'
-                                 className='w-full h-full outline-none bg-transparent'
-                            />
-                            <div className='cursor-pointer'>
-                                <span><FaEye/></span>
+                <form className='pt-6 flex flex-col gap-2' onSubmit={handleSubmit}>
+                      <div className='grid'>
+                              <label>Name : </label>
+                              <div className='bg-slate-100 p-2'>
+                                  <input 
+                                      type='text' 
+                                      placeholder='enter your name' 
+                                      name='name'
+                                      value={data.name}
+                                      onChange={handleOnChange}
+                                      required
+                                      className='w-full h-full outline-none bg-transparent'/>
+                              </div>
+                          </div>
+                        <div className='grid'>
+                            <label>Email : </label>
+                            <div className='bg-slate-100 p-2'>
+                                <input 
+                                    type='email' 
+                                    placeholder='enter email' 
+                                    name='email'
+                                    value={data.email}
+                                    onChange={handleOnChange}
+                                    required
+                                    className='w-full h-full outline-none bg-transparent'/>
                             </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <label>Confirm Password :</label>
-                        <div  className='bg-slate-100 p-2 flex items-center'>
-                            <input 
-                                type='password' 
-                                name='confirmPassword'
-                                value={data.confirmPassword} 
-                                onChange={handleChange}
-                                placeholder='enter confirm password'
-                                 className='w-full h-full outline-none bg-transparent'
-                            />
-                            <div className='cursor-pointer'>
-                                <span><FaEye/></span>
+                        <div>
+                            <label>Password : </label>
+                            <div className='bg-slate-100 p-2 flex'>
+                                <input 
+                                    type={showPassword ? "text" : "password"} 
+                                    placeholder='enter password'
+                                    value={data.password}
+                                    name='password' 
+                                    onChange={handleOnChange}
+                                    required
+                                    className='w-full h-full outline-none bg-transparent'/>
+                                <div className='cursor-pointer text-xl' onClick={()=>setShowPassword((preve)=>!preve)}>
+                                    <span>
+                                        {
+                                            showPassword ? (
+                                                <FaEyeSlash/>
+                                            )
+                                            :
+                                            (
+                                                <FaEye/>
+                                            )
+                                        }
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                        <div>
+                            <label>Confirm Password : </label>
+                            <div className='bg-slate-100 p-2 flex'>
+                                <input 
+                                    type={showConfirmPassword ? "text" : "password"} 
+                                    placeholder='enter confirm password'
+                                    value={data.confirmPassword}
+                                    name='confirmPassword' 
+                                    onChange={handleOnChange}
+                                    required
+                                    className='w-full h-full outline-none bg-transparent'/>
 
-                    <button className='bg-red-600 rounded-full text-white px-6 py-2 w-full max-w-[150px] mx-auto block mt-4'>Sign up</button>
-                </form> 
+                                <div className='cursor-pointer text-xl' onClick={()=>setShowConfirmPassword((preve)=>!preve)}>
+                                    <span>
+                                        {
+                                            showConfirmPassword ? (
+                                                <FaEyeSlash/>
+                                            )
+                                            :
+                                            (
+                                                <FaEye/>
+                                            )
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button className='bg-red-600 hover:bg-red-700 text-white px-6 py-2 w-full max-w-[150px] rounded-full hover:scale-110 transition-all mx-auto block mt-6'>Sign Up</button>
+
+                    </form>
                 <p className='my-5'>Already have account ? <Link to={"/login"} className='hover:text-red-700 text-red-600 hover:underline'>Login</Link></p>
             </div>
 

@@ -31,6 +31,7 @@ async function userSignUpController(req,res) {
         }
         const payLoad ={
             ...req.body,
+            role:"GENERAL",
             password : hashPassword
         }
 
