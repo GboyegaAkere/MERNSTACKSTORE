@@ -24,7 +24,7 @@ async function userSignInController(req,res) {
         
         console.log("checkPassword", checkPassword)
 
-        //CONDITION TO SHOW IF THE PASSOWRD MATCH OR DOES NOT MATCH ITH THE ONES IN THE DATABASE
+        //CONDITION TO SHOW IF THE PASSOWRD MATCH OR DOES NOT MATCH THE ONES IN THE DATABASE
 
         if (checkPassword) {
             
